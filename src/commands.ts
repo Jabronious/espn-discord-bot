@@ -11,6 +11,8 @@ const commands = [
 
 const rest = new REST({ version: '9' }).setToken(configs.FBB_BOT_TOKEN);
 
-rest.put(Routes.applicationGuildCommands(configs.FBB_BOT_CLIENT_ID, '827907164780756992'), { body: commands })
+rest.put(Routes.applicationGuildCommands(configs.FBB_BOT_CLIENT_ID, '827907164780756992') as unknown as `/${string}`, {
+	body: commands,
+})
 	.then(() => console.log('Successfully registered application commands.'))
 	.catch(console.error);
