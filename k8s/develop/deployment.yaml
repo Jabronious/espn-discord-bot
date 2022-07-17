@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: espn-discord-bot-deployment
+  namespace: espn-discord-bot-develop
+  labels:
+    app: espn-discord-bot-develop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: espn-discord-bot-develop
+  template:
+    metadata:
+      labels:
+        app: espn-discord-bot-develop
+    spec:
+      containers:
+      - name: espn-discord-bot
+        image: jabronious/espn-discord-bot 
+        env:
+        - name: FBB_BOT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: fbb-bot-secrets
+              key: fbb-bot-secret
+        - name: FBB_BOT_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: fbb-bot-secrets
+              key: fbb-bot-client-id
+        - name: FBB_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: fbb-bot-secrets
+              key: fbb-bot-token
+      imagePullSecrets:
+        - name: regcred
