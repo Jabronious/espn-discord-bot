@@ -2,22 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: espn-discord-bot-deployment
-  namespace: espn-discord-bot-develop
+  namespace: espn-discord-bot
   labels:
-    app: espn-discord-bot-develop
+    app: espn-discord-bot
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: espn-discord-bot-develop
+      app: espn-discord-bot
   template:
     metadata:
       labels:
-        app: espn-discord-bot-develop
+        app: espn-discord-bot
     spec:
       containers:
       - name: espn-discord-bot
-        image: jabronious/espn-discord-bot:develop
+        image: jabronious/espn-discord-bot:latest
         env:
         - name: FBB_BOT_SECRET
           valueFrom:
