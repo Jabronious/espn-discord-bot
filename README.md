@@ -1,6 +1,6 @@
-# typescript-project
+# ESPN Discord Bot
 
-# Pulling latest changes down  
+## Pulling latest changes down
 
 - `git remote add upstream git@github.com:Jabronious/typescript-project.git`  
 - `git fetch upstream`  
