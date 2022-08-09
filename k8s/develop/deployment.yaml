@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: espn-discord-bot
-        image: jabronious/espn-discord-bot 
+        image: jabronious/espn-discord-bot:develop
         env:
         - name: FBB_BOT_SECRET
           valueFrom:
