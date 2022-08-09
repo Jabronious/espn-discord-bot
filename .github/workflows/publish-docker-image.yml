@@ -30,7 +30,7 @@ jobs:
       -
         name: Build and push to develop
         uses: docker/build-push-action@v2
-        if: contains('develop', github.ref)
+        if: contains(github.ref, 'develop')
         with:
           context: .
           file: ./Dockerfile
@@ -40,7 +40,7 @@ jobs:
       -
         name: Build and push to prod
         uses: docker/build-push-action@v2
-        if: contains('main', github.ref)
+        if: contains(github.ref, 'main')
         with:
           context: .
           file: ./Dockerfile
