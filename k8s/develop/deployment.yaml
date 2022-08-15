@@ -18,6 +18,10 @@ spec:
       containers:
       - name: espn-discord-bot
         image: jabronious/espn-discord-bot:develop
+        lifecycle:
+          postStart:
+            exec:
+              command: ["npm", "run", "deploy"]
         env:
         - name: FBB_BOT_SECRET
           valueFrom:
