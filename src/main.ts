@@ -1,27 +1,27 @@
-import { Client, Collection, Intents } from 'discord.js';
+import { GatewayIntentBits } from 'discord.js';
 import { configs } from './configuration';
+import { ClientWithCommands } from './types/client-with-commands';
+import { Command } from './types/commands';
 
-type ClientWithCommands = Client & { commands: Collection<unknown, unknown> | undefined };
 // Create a new client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new ClientWithCommands({ intents: [GatewayIntentBits.Guilds] });
 
-(client as ClientWithCommands).commands = new Collection();
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
 	console.log('Ready!');
 });
 
 client.on('interactionCreate', async (interaction) => {
-	if (!interaction.isCommand()) return;
+	if (!interaction.isChatInputCommand()) return;
 
-	const { commandName } = interaction;
+	const command = client.commands.get(interaction.commandName) as Command;
 
-	if (commandName === 'ping') {
-		await interaction.reply('Pong!');
-	} else if (commandName === 'server') {
-		await interaction.reply('Server info.');
-	} else if (commandName === 'user') {
-		await interaction.reply('User info.');
+	if (!command) return;
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
 });
 
