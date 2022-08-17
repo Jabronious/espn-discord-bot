@@ -4,12 +4,8 @@ WORKDIR /usr/app
 
 COPY package*.json ./
 
-COPY tsconfig*.json ./
-
 RUN npm install 
 
-COPY . .
+COPY ./lib .
 
-RUN npm run build
-
-CMD [ "node", "./lib/main.js" ]
+CMD [ "node", "./main.js" ]
