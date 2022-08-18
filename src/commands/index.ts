@@ -5,7 +5,10 @@ import { configs } from '../configuration';
 
 const commands = [];
 const commandsPath = path.join(__dirname);
-const commandFiles = fs.readdirSync(commandsPath).filter((file) => file !== 'index.ts' && file.endsWith('.ts'));
+const fileType = configs.isDevelopment ? 'ts' : 'js';
+const commandFiles = fs
+	.readdirSync(commandsPath)
+	.filter((file) => file !== `index.${fileType}` && file.endsWith(`.${fileType}`));
 
 for (const file of commandFiles) {
 	const filePath = path.join(commandsPath, file);
