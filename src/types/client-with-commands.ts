@@ -9,7 +9,7 @@ export class ClientWithCommands extends Client {
 		super(options);
 
 		const fileType = configs.isDevelopment ? 'ts' : 'js';
-		const commandsPath = path.join(__dirname, 'commands');
+		const commandsPath = path.join(__dirname, '..', 'commands');
 		const commandFiles = fs
 			.readdirSync(commandsPath)
 			.filter((file) => file !== `index.${fileType}` && file.endsWith(`.${fileType}`));
