@@ -106,3 +106,5 @@ dist
 
 # Terraform providers
 terraform/.terraform**
+
+.DS_Store

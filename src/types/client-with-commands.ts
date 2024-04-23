@@ -5,6 +5,7 @@ import { Client, ClientOptions, Collection } from 'discord.js';
 
 export class ClientWithCommands extends Client {
 	commands = new Collection();
+
 	constructor(options: ClientOptions) {
 		super(options);
 
