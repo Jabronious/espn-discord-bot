@@ -32,7 +32,7 @@ client.on('interactionCreate', async (interaction) => {
 		} else if (interaction.isModalSubmit()) {
 			const handler = modalHandlers[interaction.customId];
 			if (handler) {
-				handler.handle(interaction);
+				await handler.handle(interaction);
 			} else {
 				throw new CommandDoesntExistError(`No handler found for modal with custom ID: ${interaction.customId}`);
 			}

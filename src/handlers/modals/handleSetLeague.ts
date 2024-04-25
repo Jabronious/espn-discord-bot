@@ -6,7 +6,7 @@ import { UnauthorizedError, UnreachableError } from '../errors/errors';
 export class SetLeagueModalHandler extends BaseModalHandler {
 	modalId = 'setLeague';
 
-	handle(interaction: ModalSubmitInteraction): void {
+	async handle(interaction: ModalSubmitInteraction): Promise<void> {
 		// Implementation specific to the 'setLeague' modal
 		if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageChannels)) {
 			throw new UnauthorizedError(
@@ -23,7 +23,7 @@ export class SetLeagueModalHandler extends BaseModalHandler {
 		}
 
 		const leagueConnectionService = new LeagueConnectionService();
-		leagueConnectionService.createLeagueConnection(guildId, leagueId).catch((err) => console.log(err));
+		await leagueConnectionService.createLeagueConnection(guildId, leagueId);
 
 		interaction.reply({ content: `League ID set to: ${leagueId}`, ephemeral: true });
 	}
