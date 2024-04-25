@@ -29,6 +29,7 @@
 		"espn-fantasy-baseball": "^0.1.1",
 		"mongoose": "^8.3.2",
 		"nodemon": "^3.1.0",
-		"ts-node": "^10.9.1"
+		"ts-node": "^10.9.1",
+		"winston": "^3.13.0"
 	}
 }
