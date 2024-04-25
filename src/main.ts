@@ -8,6 +8,7 @@ import { BaseModalHandler } from './types/modalHandler';
 import { existsSync, readdirSync } from 'fs';
 import { handleError } from './handlers/errors/errorHandler';
 import { CommandDoesntExistError, DefaultError } from './handlers/errors/errors';
+import { logger } from './services/logger';
 
 const modalHandlers: Record<string, BaseModalHandler> = {};
 
@@ -16,11 +17,14 @@ const client = new ClientWithCommands({ intents: [GatewayIntentBits.Guilds] });
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
-	mongoose.connect(configs.COSMOS_CONNECTION_STRING).catch((err) => console.log(err));
+	mongoose.connect(configs.COSMOS_CONNECTION_STRING).catch((err) => {
+		logger.error(err);
+		throw err; // We do not want to deploy the bot if we dont have a proper connection
+	});
 
 	loadModalHandlers();
 
-	console.log('Ready!');
+	logger.info('Ready!');
 });
 
 client.on('interactionCreate', async (interaction) => {
@@ -45,7 +49,7 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.on('error', (error) => {
-	console.error('An unexpected error occurred:', error);
+	logger.error('An unexpected error occurred:', error);
 });
 
 // Login to Discord with your client's token
