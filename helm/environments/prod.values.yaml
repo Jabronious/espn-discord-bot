@@ -1,0 +1,8 @@
+env: prod
+
+image:
+    name: jabronious/espn-discord-bot
+    tag: latest
+    pullPolicy: Always
+
+secretEnv: _PROD

@@ -1,8 +1,9 @@
-FROM node:lts-alpine as ts-compiler
+FROM --platform=linux/arm64 node:lts-alpine as ts-compiler
 
 WORKDIR /usr/app
 
-ENV NODE_ENV 'production'
+ARG node_env='local'
+ENV NODE_ENV $node_env
 
 COPY package*.json ./
 
