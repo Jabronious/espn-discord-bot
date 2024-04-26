@@ -3,6 +3,7 @@ import {
 	ChatInputCommandInteraction,
 	ModalActionRowComponentBuilder,
 	ModalBuilder,
+	PermissionFlagsBits,
 	SlashCommandBuilder,
 	TextInputBuilder,
 	TextInputStyle,
@@ -10,7 +11,7 @@ import {
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setDefaultMemberPermissions(0)
+		.setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
 		.setName('set_league')
 		.setDescription(
 			'Prompt you for the league you wish to use in this channel.\nLeague Id is a public identifier.'
