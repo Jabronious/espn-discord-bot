@@ -19,6 +19,10 @@ spec:
         - name: {{ .Values.appName }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          lifecycle:
+            postStart:
+                exec:
+                    command: ['npm', 'run', 'deploy']
           env:
             - name: COSMOS_CONNECTION_STRING
               valueFrom:

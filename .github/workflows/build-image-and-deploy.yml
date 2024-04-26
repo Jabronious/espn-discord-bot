@@ -76,6 +76,9 @@ jobs:
         name: 'Deploy Bot to AKS'
         runs-on: ubuntu-latest
         needs: [build-and-push-image]
+        strategy:
+            matrix:
+                node-version: [18.x]
         steps:
             - name: Checkout
               uses: actions/checkout@v4
