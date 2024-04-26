@@ -1,10 +1,8 @@
-name: Create and publish a Docker image
+name: Build/Publish a Docker image & Deploy Bot
 
 on:
     push:
-        branches: [main, develop]
-    pull_request:
-        branches: [main, develop]
+        branches: [main, staging, develop]
 
 jobs:
     build-and-push-image:
@@ -17,25 +15,23 @@ jobs:
         strategy:
             matrix:
                 node-version: [18.x]
-                # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
         steps:
-            - uses: actions/checkout@v3
-
+            - uses: actions/checkout@v4
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: 'npm'
 
-            - run: npm install --global yarn
+            - name: Instal Yarn
+              run: npm install --global yarn
 
-            - run: yarn install
+            - name: Install Packages
+              run: yarn install
 
-            - name: Install Yarn and Build
-              run: |
-                  yarn
-                  yarn build
+            - name: Yarn Build
+              run: yarn build
 
             - name: Login to Docker Hub
               uses: docker/login-action@v1
@@ -48,18 +44,60 @@ jobs:
 
             - name: Build and push to develop
               uses: docker/build-push-action@v2
-              if: contains(github.ref, 'develop')
+              if: github.ref_name == 'develop'
               with:
                   context: .
                   file: ./Dockerfile
                   push: true
                   tags: ${{ secrets.DOCKER_HUB_USERNAME }}/espn-discord-bot:develop
+                  build-args: node_env=development
+
+            - name: Build and push to staging
+              uses: docker/build-push-action@v2
+              if: github.ref_name == 'staging'
+              with:
+                  context: .
+                  file: ./Dockerfile
+                  push: true
+                  tags: ${{ secrets.DOCKER_HUB_USERNAME }}/espn-discord-bot:staging
+                  build-args: node_env=staging
 
             - name: Build and push to prod
               uses: docker/build-push-action@v2
-              if: contains(github.ref, 'main')
+              if: github.ref_name == 'prod'
               with:
                   context: .
                   file: ./Dockerfile
                   push: true
                   tags: ${{ secrets.DOCKER_HUB_USERNAME }}/espn-discord-bot:latest
+                  build-args: node_env=production
+
+    deploy-bot:
+        name: 'Deploy Bot to AKS'
+        runs-on: ubuntu-latest
+        needs: [build-and-push-image]
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Auth Azure
+              uses: azure/login@v1
+              with:
+                  creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+            - name: Set AKS Context
+              uses: azure/aks-set-context@v3
+              with:
+                  resource-group: 'efit-aks-rg'
+                  cluster-name: 'efit-aks'
+
+            - name: Install Helm
+              uses: azure/setup-helm@v3
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Deploy Service via Helm
+              run: |
+                  helm upgrade -f ./helm/environments/${{ github.ref_name }}.values.yaml \
+                  --install espn-discord-bot-${{ github.ref_name }} \
+                  ./helm
