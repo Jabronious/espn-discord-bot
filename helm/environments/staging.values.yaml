@@ -5,4 +5,4 @@ image:
     tag: staging
     pullPolicy: Always
 
-secretEnv: _DEV
+secretEnv: _STAGING
