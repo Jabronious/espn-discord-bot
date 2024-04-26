@@ -1,0 +1,8 @@
+env: staging
+
+image:
+    name: jabronious/espn-discord-bot
+    tag: staging
+    pullPolicy: Always
+
+secretEnv: _STAGING

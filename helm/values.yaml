@@ -1,0 +1,12 @@
+env: 'develop'
+
+appName: espn-discord-bot
+
+image:
+    name: jabronious/efit-web
+    tag: develop
+    pullPolicy: Always
+
+deployService: true
+
+secretEnv:

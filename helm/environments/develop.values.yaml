@@ -1,0 +1,8 @@
+env: develop
+
+image:
+    name: jabronious/espn-discord-bot
+    tag: develop
+    pullPolicy: Always
+
+secretEnv: _DEV

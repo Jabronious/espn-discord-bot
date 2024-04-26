@@ -2,6 +2,7 @@ import { REST, Routes } from 'discord.js';
 import * as fs from 'fs';
 import * as path from 'path';
 import { configs } from '../configuration';
+import { logger } from '../services/logger';
 
 const commands = [];
 const commandsPath = path.join(__dirname);
@@ -19,5 +20,5 @@ for (const file of commandFiles) {
 const rest = new REST({ version: '10' }).setToken(configs.FBB_BOT_TOKEN);
 
 rest.put(Routes.applicationCommands(configs.FBB_BOT_CLIENT_ID), { body: commands })
-	.then(() => console.log(`${commands.length} commands successfully registered application commands.`))
-	.catch(console.error);
+	.then(() => logger.info(`${commands.length} commands successfully registered application commands.`))
+	.catch(logger.error);

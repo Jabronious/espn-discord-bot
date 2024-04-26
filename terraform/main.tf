@@ -24,14 +24,13 @@ resource "random_integer" "ri" {
 }
 
 resource "azurerm_cosmosdb_account" "db" {
-  name                = "cosmos-db-${random_integer.ri.result}"
-  location            = azurerm_resource_group.default.location
-  resource_group_name = azurerm_resource_group.default.name
-  offer_type          = "Standard"
-  kind                = "MongoDB"
-  enable_free_tier    = true
-
-  enable_automatic_failover = true
+  name                      = "cosmos-db-${random_integer.ri.result}"
+  location                  = azurerm_resource_group.default.location
+  resource_group_name       = azurerm_resource_group.default.name
+  offer_type                = "Standard"
+  kind                      = "MongoDB"
+  enable_free_tier          = true
+  enable_automatic_failover = false
 
   capabilities {
     name = "EnableAggregationPipeline"
@@ -49,11 +48,6 @@ resource "azurerm_cosmosdb_account" "db" {
     consistency_level       = "BoundedStaleness"
     max_interval_in_seconds = 300
     max_staleness_prefix    = 100000
-  }
-
-  geo_location {
-    location          = "westus"
-    failover_priority = 1
   }
 
   geo_location {

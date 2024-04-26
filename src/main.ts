@@ -1,11 +1,14 @@
 import { GatewayIntentBits } from 'discord.js';
 import { configs } from './configuration';
-import { ClientWithCommands } from './types/client-with-commands';
+import { ClientWithCommands } from './types/clientWithCommands';
 import { Command } from './types/commands';
 import mongoose from 'mongoose';
 import path from 'path';
-import { BaseModalHandler } from './types/modal-handler';
+import { BaseModalHandler } from './types/modalHandler';
 import { existsSync, readdirSync } from 'fs';
+import { handleError } from './handlers/errors/errorHandler';
+import { CommandDoesntExistError, DefaultError } from './handlers/errors/errors';
+import { logger } from './services/logger';
 
 const modalHandlers: Record<string, BaseModalHandler> = {};
 
@@ -14,33 +17,39 @@ const client = new ClientWithCommands({ intents: [GatewayIntentBits.Guilds] });
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
-	mongoose.connect(configs.COSMOS_CONNECTION_STRING).catch((err) => console.log(err));
+	mongoose.connect(configs.COSMOS_CONNECTION_STRING).catch((err) => {
+		logger.error(err);
+		throw err; // We do not want to deploy the bot if we dont have a proper connection
+	});
 
 	loadModalHandlers();
 
-	console.log('Ready!');
+	logger.info('Ready!');
 });
 
 client.on('interactionCreate', async (interaction) => {
-	if (interaction.isChatInputCommand()) {
-		const command = client.commands.get(interaction.commandName) as Command;
+	try {
+		if (interaction.isChatInputCommand()) {
+			const command = client.commands.get(interaction.commandName) as Command;
 
-		if (!command) return;
-		try {
 			await command.execute(interaction);
-		} catch (error) {
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-		}
-	} else if (interaction.isModalSubmit()) {
-		const handler = modalHandlers[interaction.customId];
-		if (handler) {
-			handler.handle(interaction);
+		} else if (interaction.isModalSubmit()) {
+			const handler = modalHandlers[interaction.customId];
+			if (handler) {
+				await handler.handle(interaction);
+			} else {
+				throw new CommandDoesntExistError(`No handler found for modal with custom ID: ${interaction.customId}`);
+			}
 		} else {
-			console.error(`No handler found for modal with custom ID: ${interaction.customId}`);
+			return;
 		}
-	} else {
-		return;
+	} catch (error: any) {
+		handleError(error, interaction);
 	}
+});
+
+client.on('error', (error) => {
+	logger.error('An unexpected error occurred:', error);
 });
 
 // Login to Discord with your client's token
@@ -72,3 +81,12 @@ function loadModalHandlers() {
 		}
 	});
 }
+
+process.on('unhandledRejection', (error: DefaultError) => {
+	handleError(error, undefined, 'Unhandled Rejection at Promise');
+});
+
+process.on('uncaughtException', (error: DefaultError) => {
+	handleError(error, undefined, 'Uncaught Exception thrown');
+	process.exit(1);
+});
