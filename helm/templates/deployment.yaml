@@ -24,6 +24,11 @@ spec:
                 exec:
                     command: ['npm', 'run', 'deploy']
           env:
+            - name: DOCKERHUB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dockerhub-bot-creds
+                  key: credential
             - name: COSMOS_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
@@ -51,3 +56,5 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "100m"
+      imagePullSecrets:
+        - name: dockerhub-config
