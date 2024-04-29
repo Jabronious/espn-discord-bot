@@ -1,6 +1,6 @@
-import { cleanEnv, str } from 'envalid';
+import { bool, cleanEnv, str } from 'envalid';
 
-function subdomain() {
+function subdomain(): string {
 	if (process.env.NODE_ENV === 'staging') {
 		return 'staging.';
 	} else if (process.env.NODE_ENV === 'production') {
@@ -10,6 +10,10 @@ function subdomain() {
 	}
 }
 
+function isLocal(): boolean {
+	return process.env.NODE_ENV === 'local';
+}
+
 export const configs = cleanEnv(process.env, {
 	FBB_BOT_SECRET: str(),
 	FBB_BOT_CLIENT_ID: str(),
@@ -17,4 +21,5 @@ export const configs = cleanEnv(process.env, {
 	COSMOS_CONNECTION_STRING: str({ devDefault: 'change-me' }),
 	NODE_ENV: str({ choices: ['local', 'development', 'test', 'production', 'staging'], default: 'development' }),
 	SUBDOMAIN: str({ default: subdomain() }),
+	isLocal: bool({ default: isLocal() }),
 });
