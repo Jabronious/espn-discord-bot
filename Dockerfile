@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 node:lts-alpine as ts-compiler
+FROM node:lts-alpine as ts-compiler
 
 WORKDIR /usr/app
 
