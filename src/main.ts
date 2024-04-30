@@ -61,27 +61,25 @@ function loadModalHandlers() {
 	const fileType = configs.isLocal ? 'ts' : 'js';
 
 	readdirSync(modalsDirectory).forEach((file) => {
-		if (path.extname(file) === '.ts') {
-			const filePath = path.join(modalsDirectory, file);
-			const modalHandler = require(filePath); // Adjust based on export
-			Object.keys(modalHandler).forEach((key) => {
-				const modalHandlerClass = modalHandler[key];
-				if (modalHandlerClass && modalHandlerClass.prototype instanceof BaseModalHandler) {
-					const handlerInstance = new modalHandlerClass();
-					const commandExists = existsSync(
-						path.join(commandsDirectory, `${handlerInstance.modalId}.${fileType}`)
-					);
+		const filePath = path.join(modalsDirectory, file);
+		const modalHandler = require(filePath); // Adjust based on export
+		Object.keys(modalHandler).forEach((key) => {
+			const modalHandlerClass = modalHandler[key];
+			if (modalHandlerClass && modalHandlerClass.prototype instanceof BaseModalHandler) {
+				const handlerInstance = new modalHandlerClass();
+				const commandExists = existsSync(
+					path.join(commandsDirectory, `${handlerInstance.modalId}.${fileType}`)
+				);
 
-					if (!commandExists) {
-						throw new Error(`No corresponding command found for modal ID: ${handlerInstance.modalId}`);
-					}
-
-					modalHandlers[handlerInstance.modalId] = handlerInstance;
-				} else {
-					throw new Error(`Invalid modal handler in file: ${file}`);
+				if (!commandExists) {
+					throw new Error(`No corresponding command found for modal ID: ${handlerInstance.modalId}`);
 				}
-			});
-		}
+
+				modalHandlers[handlerInstance.modalId] = handlerInstance;
+			} else {
+				throw new Error(`Invalid modal handler in file: ${file}`);
+			}
+		});
 	});
 }
 
