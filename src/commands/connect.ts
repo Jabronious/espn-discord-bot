@@ -7,7 +7,7 @@ module.exports = {
 		.setName('connect')
 		.setDescription('Direct you to the website to connect your fantasy account and discord'),
 	async execute(interaction: ChatInputCommandInteraction) {
-		const url = `https://www.${configs.SUBDOMAIN}efit-web.site/connect`;
+		const url = `https://www.${configs.SUBDOMAIN}efit-web.site`;
 		const userService = new UsersService();
 		const user = await userService.findByDiscordId(interaction.user.id);
 		let msg = `Connect your fantasy account to your discord here: ${url}`;
