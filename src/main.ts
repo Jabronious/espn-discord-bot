@@ -58,6 +58,7 @@ client.login(configs.FBB_BOT_TOKEN);
 function loadModalHandlers() {
 	const modalsDirectory = path.join(__dirname, 'handlers', 'modals');
 	const commandsDirectory = path.join(__dirname, 'commands');
+	const fileType = configs.isLocal ? 'ts' : 'js';
 
 	readdirSync(modalsDirectory).forEach((file) => {
 		if (path.extname(file) === '.ts') {
@@ -67,7 +68,9 @@ function loadModalHandlers() {
 				const modalHandlerClass = modalHandler[key];
 				if (modalHandlerClass && modalHandlerClass.prototype instanceof BaseModalHandler) {
 					const handlerInstance = new modalHandlerClass();
-					const commandExists = existsSync(path.join(commandsDirectory, `${handlerInstance.modalId}.ts`));
+					const commandExists = existsSync(
+						path.join(commandsDirectory, `${handlerInstance.modalId}.${fileType}`)
+					);
 
 					if (!commandExists) {
 						throw new Error(`No corresponding command found for modal ID: ${handlerInstance.modalId}`);
