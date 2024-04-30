@@ -6,7 +6,7 @@ import { logger } from '../services/logger';
 
 const commands = [];
 const commandsPath = path.join(__dirname);
-const fileType = configs.isDevelopment ? 'ts' : 'js';
+const fileType = configs.isLocal ? 'ts' : 'js';
 const commandFiles = fs
 	.readdirSync(commandsPath)
 	.filter((file) => file !== `index.${fileType}` && file.endsWith(`.${fileType}`));
