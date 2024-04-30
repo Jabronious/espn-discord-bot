@@ -9,7 +9,7 @@ export class ClientWithCommands extends Client {
 	constructor(options: ClientOptions) {
 		super(options);
 
-		const fileType = configs.isDevelopment ? 'ts' : 'js';
+		const fileType = configs.isLocal ? 'ts' : 'js';
 		const commandsPath = path.join(__dirname, '..', 'commands');
 		const commandFiles = fs
 			.readdirSync(commandsPath)
