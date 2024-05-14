@@ -44,6 +44,26 @@ spec:
                 secretKeyRef:
                   name: fbb-bot-token
                   key: credential
+            - name: AZURE_TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: azure-tenant-id
+                  key: credential
+            - name: AZURE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: azure-client-id
+                  key: credential
+            - name: AZURE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: azure-client-secret
+                  key: credential
+            - name: KEY_VAULT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: key-vault-url
+                  key: credential
           resources:
             requests:
               memory: "16Mi"
