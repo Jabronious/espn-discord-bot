@@ -18,12 +18,15 @@
 	},
 	"devDependencies": {
 		"@types/jest": "^29.5.12",
-		"@types/node": "^20.11.22",
+		"@types/node": "^20.12.11",
+		"jest": "^29.7.0",
 		"rimraf": "^5.0.5",
-		"typescript": "^5.3.3"
+		"typescript": "^5.4.5"
 	},
 	"dependencies": {
 		"@azure/cosmos": "^4.0.0",
+		"@azure/identity": "^4.2.0",
+		"@azure/keyvault-keys": "^4.8.0",
 		"discord.js": "^14.14.0",
 		"envalid": "^8.0.0",
 		"espn-fantasy-baseball": "^0.1.1",
