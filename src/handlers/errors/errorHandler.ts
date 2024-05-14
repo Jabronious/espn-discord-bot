@@ -9,7 +9,7 @@ import { logger } from '../../services/logger';
 export async function handleError(error: DefaultError, interaction?: BaseInteraction, context = '') {
 	logger.error(`${context}:`, error);
 
-	if (interaction?.isRepliable()) {
+	if (interaction?.isRepliable() && error.reply) {
 		await interaction?.reply({
 			content: error.message || 'There was an error while executing this command!',
 			ephemeral: error.ephemeral,
